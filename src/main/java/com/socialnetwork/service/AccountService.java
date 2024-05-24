@@ -1,10 +1,7 @@
 package com.socialnetwork.service;
 
 import com.socialnetwork.model.Account;
-import com.socialnetwork.model.Publication;
 import com.socialnetwork.repository.AccountRepository;
-import com.socialnetwork.repository.PublicationRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Optional;
-import java.util.List;
 
 @Service // Позначає клас як сервісний компонент Spring, який містить бізнес-логіку
 public class AccountService implements UserDetailsService {
@@ -24,9 +20,6 @@ public class AccountService implements UserDetailsService {
 
     @Autowired // Автоматичне впровадження залежності BCryptPasswordEncoder для шифрування паролів
     private BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
-    private PublicationRepository publicationRepository;
 
     // Метод для реєстрації нового облікового запису
     public Account registerAccount(Account account) {
@@ -76,23 +69,5 @@ public class AccountService implements UserDetailsService {
             .roles("USER")
             // Завершуємо побудову об'єкта User
             .build();
-    }
-
-    public List<Account> getAllAccounts() {
-        return accountRepository.findAll();
-    }
-
-    public Publication addPublication(Long accountId, Publication publication) {
-        Optional<Account> accountOpt = accountRepository.findById(accountId);
-        if (accountOpt.isPresent()) {
-            Account account = accountOpt.get();
-            account.addPublication(publication);
-            return publicationRepository.save(publication);
-        }
-        return null;
-    }
-
-    public List<Publication> getPublicationsByAccountId(Long accountId) {
-        return publicationRepository.findByAccountId(accountId);
-    }
+}
 }

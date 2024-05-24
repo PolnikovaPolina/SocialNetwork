@@ -1,5 +1,8 @@
 package com.socialnetwork.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity  // Позначає клас як сутність (entity) для JPA
@@ -24,6 +27,9 @@ public class Account
     @Column(name = "followersCount", nullable = false)  // Налаштовує відображення поля в стовпець кількість підписників
     private int followersCount;
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Publication> publications = new ArrayList<>();
+
      // Конструктор за замовчуванням
      public Account() {}
 
@@ -36,7 +42,25 @@ public class Account
          this.followersCount = 0;
      }
 
+    public void addPublication(Publication publication) {
+        publications.add(publication);
+        publication.setAccount(this);
+    }
+
+    public void removePublication(Publication publication) {
+        publications.remove(publication);
+        publication.setAccount(null);
+    } 
+
     // Геттери та сеттери для доступу до полів класу
+    public List<Publication> getPublications() {
+        return publications;
+    }
+
+    public void setPublications(List<Publication> publications) {
+        this.publications = publications;
+    }
+
     public Long getId() {
         return id;
     }
@@ -84,4 +108,6 @@ public class Account
     public void setFollowersCount(int followersCount) {
         this.followersCount = followersCount;
     }
+
+
 }
